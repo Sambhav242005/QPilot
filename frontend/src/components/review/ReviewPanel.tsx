@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -99,14 +101,16 @@ export function ReviewPanel({ onSubmit, loading = false }: ReviewPanelProps) {
         {messages.length > 0 && (
           <div className="space-y-2">
             <h4 className="font-medium">AI Analysis</h4>
-            <div className="text-sm text-muted-foreground max-h-32 overflow-y-auto">
+            <div className="text-sm text-muted-foreground max-h-48 overflow-y-auto space-y-3">
               {messages
                 .filter((m) => m.role === "assistant")
                 .slice(-3)
                 .map((msg, i) => (
-                  <p key={i} className="mb-2">
-                    {msg.content}
-                  </p>
+                  <div key={i} className="prose prose-sm max-w-none break-words prose-headings:mb-1 prose-headings:mt-3 prose-p:my-1 prose-ul:my-1 prose-li:my-0 prose-strong:font-semibold prose-strong:text-gray-900">
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                      {msg.content}
+                    </ReactMarkdown>
+                  </div>
                 ))}
             </div>
           </div>

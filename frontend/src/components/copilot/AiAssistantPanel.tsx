@@ -537,10 +537,10 @@ export function AiAssistantPanel({ complaintId, onComplaintCreated }: AiAssistan
           </div>
         )}
 
-        {analysis && <AnalysisResults analysis={analysis} />}
-
         {/* Chat Messages */}
         <div className="flex-1 overflow-y-auto px-4 space-y-4 min-h-0">
+          {analysis && <AnalysisResults analysis={analysis} />}
+
           {messages.length === 0 && !analysis && !isExtracting ? (
             <EmptyState type="no-messages" title="Ready for complaint analysis" description="Upload a document or paste complaint text to begin." />
           ) : messages.map((message) => (
