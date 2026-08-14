@@ -4,6 +4,11 @@
 
 QPilot is an AI-powered Customer Complaint Management System for pharmaceutical manufacturing. It serves as an intelligent copilot that converts unstructured customer complaints into structured QMS complaint records.
 
+## Live Demo
+
+- **Frontend**: https://pleasing-solace-production-19ed.up.railway.app/
+- **Backend API**: https://resourceful-abundance-production-6ce4.up.railway.app/api/v1/health
+
 ## Start Here
 
 The detailed installation and usage guide is in [docs/USER_GUIDE.md](docs/USER_GUIDE.md). The shortest local setup is:
