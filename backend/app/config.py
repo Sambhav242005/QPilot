@@ -1,7 +1,10 @@
 """QPilot Backend - Settings and Configuration."""
 
+import json
 from functools import lru_cache
+from typing import Annotated
 
+from pydantic import Field, field_validator
 from pydantic_settings import BaseSettings
 
 
@@ -26,6 +29,18 @@ class Settings(BaseSettings):
 
     # ─── CORS ───────────────────────────────────────────────────────────
     CORS_ORIGINS: list[str] = ["http://localhost:3000"]
+
+    @field_validator("CORS_ORIGINS", mode="before")
+    @classmethod
+    def parse_cors_origins(cls, v):
+        if isinstance(v, str):
+            try:
+                return json.loads(v)
+            except json.JSONDecodeError:
+                # Handle Railway stripping quotes: [url1, url2]
+                v = v.strip("[]")
+                return [origin.strip() for origin in v.split(",") if origin.strip()]
+        return v
 
     model_config = {"env_file": ".env", "env_file_encoding": "utf-8"}
 
