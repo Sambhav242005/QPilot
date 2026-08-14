@@ -26,12 +26,12 @@ describe("AnalysisResults", () => {
 
     render(<AnalysisResults analysis={analysis} />);
 
-    expect(screen.getByText("Ready for Review")).toBeInTheDocument();
+    expect(screen.getByText("Needs Human Review")).toBeInTheDocument();
     expect(screen.getByText("Complaint Classification")).toBeInTheDocument();
     expect(screen.getByText("Risk Assessment")).toBeInTheDocument();
     expect(screen.getByText("Route to QA investigation and review the affected batch.")).toBeInTheDocument();
     expect(screen.getByText("Quantity Affected")).toBeInTheDocument();
     expect(screen.getByText("Expiry Date")).toBeInTheDocument();
-    expect(screen.getByText(/field coverage, not AI analysis completion/i)).toBeInTheDocument();
+    expect(screen.getByText(/percentage of required complaint fields/i)).toBeInTheDocument();
   });
 });

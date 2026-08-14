@@ -22,9 +22,15 @@ export interface ComplaintExtraction {
 export type Severity = "Critical" | "Major" | "Minor";
 export type Confidence = "High" | "Medium" | "Low";
 
+export interface RiskFactor {
+  factor: string;
+  severity: Severity;
+  reasoning: string;
+}
+
 export interface RiskAssessment {
   severity: Severity;
-  risk_factors: string[];
+  risk_factors: RiskFactor[];
   reasoning: string;
   recommended_action: string;
   confidence: Confidence | null;

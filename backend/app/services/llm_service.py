@@ -10,6 +10,7 @@ from ..config import get_settings
 from ..schemas.complaint import ComplaintExtraction
 from ..schemas.classification import ComplaintClassification
 from ..schemas.risk import RiskAssessment
+from ..prompts.risk import RISK_PROMPT
 
 
 class LLMService:
@@ -174,20 +175,10 @@ JSON:"""
         """Assess risk of a complaint."""
         extraction_dict = extraction.model_dump()
         classification_dict = classification.model_dump()
-        prompt = f"""Assess the risk of this complaint.
-
-Extraction: {extraction_dict}
-Classification: {classification_dict}
-
-Return a JSON object with:
-- overall_severity: low, medium, high, critical
-- risk_score: 0.0 to 1.0
-- risk_factors: Array of objects with factor, severity, reasoning
-- reasoning: Overall reasoning
-- recommended_action: What to do next
-- confidence: low, medium, or high based on the evidence available in the complaint
-
-JSON:"""
+        prompt = RISK_PROMPT.format(
+            extraction=extraction_dict,
+            classification=classification_dict,
+        )
 
         content = await self._call_llm(prompt)
 

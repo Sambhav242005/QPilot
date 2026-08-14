@@ -35,11 +35,11 @@ export function AnalysisResults({ analysis }: AnalysisResultsProps) {
             <Sparkles className="h-4 w-4 text-blue-600" aria-hidden="true" />
             <div>
               <h3 className="text-sm font-semibold text-blue-950">AI Analysis</h3>
-              <p className="text-xs text-blue-800">Initial assessment based on the complaint source.</p>
+              <p className="text-xs text-blue-800">Classification, risk assessment, and recommended actions based on extracted data.</p>
             </div>
           </div>
           <Badge variant="outline" className="border-amber-300 bg-amber-50 text-amber-800">
-            Ready for Review
+            Needs Human Review
           </Badge>
         </div>
         <p className="mt-3 flex items-start gap-2 text-xs leading-relaxed text-blue-900">
@@ -61,7 +61,7 @@ export function AnalysisResults({ analysis }: AnalysisResultsProps) {
           <CardContent>
             <Progress value={completenessPercent} className="h-1.5" aria-label={`Complaint field completeness ${completenessPercent}%`} />
             <p className="mt-2 text-xs text-slate-500">
-              This score reflects extracted field coverage, not AI analysis completion.
+              Percentage of required complaint fields extracted from the source document.
             </p>
           </CardContent>
         </Card>

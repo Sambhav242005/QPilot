@@ -27,7 +27,7 @@ describe("ReviewPanel", () => {
   it("shows completeness badge", () => {
     renderWithProviders(<ReviewPanel onSubmit={vi.fn()} />);
 
-    expect(screen.getByText(/complete/i)).toBeInTheDocument();
+    expect(screen.getByText(/field coverage/i)).toBeInTheDocument();
   });
 
   it("shows missing fields when incomplete", () => {

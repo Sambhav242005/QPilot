@@ -45,7 +45,7 @@ export function ReviewPanel({ onSubmit, loading = false }: ReviewPanelProps) {
         <CardTitle className="flex items-center justify-between">
           <span>Review Complaint</span>
           <Badge variant={completenessScore >= 0.5 ? "default" : "destructive"}>
-            {Math.round(completenessScore * 100)}% Fields Complete
+            {Math.round(completenessScore * 100)}% Field Coverage
           </Badge>
         </CardTitle>
       </CardHeader>

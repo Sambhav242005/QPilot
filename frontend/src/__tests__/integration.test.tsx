@@ -163,6 +163,6 @@ describe("Frontend Integration — Review Panel", () => {
     );
 
     expect(screen.getByText(/review complaint/i)).toBeInTheDocument();
-    expect(screen.getByText(/complete/i)).toBeInTheDocument();
+    expect(screen.getByText(/field coverage/i)).toBeInTheDocument();
   });
 });

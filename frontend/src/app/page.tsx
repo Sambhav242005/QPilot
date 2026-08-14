@@ -54,7 +54,7 @@ export default function HomePage() {
 
   return (
     <AppShell>
-      <div className="min-h-[calc(100vh-4.5rem)] bg-gray-50">
+      <div className="min-h-[calc(100vh-4.5rem)] overflow-y-auto bg-gray-50">
         <div className="mx-auto max-w-7xl p-4 sm:p-6">
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           {/* Left Panel - Complaint Form (2/3 width) */}

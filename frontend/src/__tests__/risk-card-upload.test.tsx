@@ -14,7 +14,9 @@ const renderWithStore = (ui: React.ReactElement) => {
 describe('RiskAssessmentCard', () => {
   const mockAssessment = {
     severity: 'Minor' as const,
-    risk_factors: ['Minor packaging issue'],
+    risk_factors: [
+      { factor: 'Minor packaging issue', severity: 'Minor' as const, reasoning: 'Cosmetic defect only.' },
+    ],
     reasoning: 'Low severity packaging defect',
     recommended_action: 'Monitor and document',
     confidence: 'High' as const,

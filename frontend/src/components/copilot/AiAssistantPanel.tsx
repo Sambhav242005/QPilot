@@ -190,9 +190,42 @@ export function AiAssistantPanel({ complaintId, onComplaintCreated }: AiAssistan
       dispatch(setExtractionProgress(100));
       dispatch(setError(null));
       dispatch(dismissEmptyState());
+
+      // Build a detailed summary from extracted data
+      const extraction = parseRecord(data?.extraction);
+      const source = extraction ? fieldValue(extraction, "complaint_source") : "";
+      const customer = extraction ? fieldValue(extraction, "customer_name") : "";
+      const product = extraction ? fieldValue(extraction, "product_name") : "";
+      const batch = extraction ? fieldValue(extraction, "batch_lot_number") : "";
+      const complaintType = extraction ? fieldValue(extraction, "complaint_type", "complaint_category") : "";
+      const severity = extraction ? fieldValue(extraction, "initial_severity") : "";
+
+      const extractedLines: string[] = [];
+      if (source) extractedLines.push(`- **Source:** ${source}`);
+      if (customer) extractedLines.push(`- **Customer:** ${customer}`);
+      if (product) extractedLines.push(`- **Product:** ${product}`);
+      if (batch) extractedLines.push(`- **Batch:** ${batch}`);
+      if (complaintType) extractedLines.push(`- **Type:** ${complaintType}`);
+      if (severity) extractedLines.push(`- **Severity:** ${severity}`);
+
+      const extractedSummary = extractedLines.length > 0
+        ? `\n\n**Extracted Fields:**\n${extractedLines.join("\n")}`
+        : "";
+
+      const completenessRecord = parseRecord(data?.completeness);
+      const completenessScore = completenessRecord?.score;
+      const missingFields = completenessRecord?.missing_fields;
+      const completenessNote = typeof completenessScore === "number"
+        ? `\n\n**Field Completeness:** ${Math.round(completenessScore * 100)}% — ${
+            Array.isArray(missingFields) && missingFields.length > 0
+              ? `Missing: ${missingFields.join(", ")}. Add these through the form or tell me in chat.`
+              : "All required fields were found."
+          }`
+        : "";
+
       dispatch(addMessage({
         role: "assistant",
-        content: `**Complaint Processed**\n\nDocument **${file.name}** was extracted and the complaint form is populated. The initial AI classification and risk assessment are shown below. Please review the fields and recommendations before committing to QMS.`,
+        content: `**Complaint Processed**\n\nDocument **${file.name}** was extracted and the complaint form is populated.${extractedSummary}${completenessNote}\n\nThe AI classification, risk assessment, and recommended actions are shown below. Please review everything before committing to QMS.`,
       }));
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Unknown error";
@@ -247,9 +280,42 @@ export function AiAssistantPanel({ complaintId, onComplaintCreated }: AiAssistan
       dispatch(setExtractionProgress(100));
       dispatch(setError(null));
       dispatch(dismissEmptyState());
+
+      // Build a detailed summary from extracted data
+      const extraction = parseRecord(data?.extraction);
+      const source = extraction ? fieldValue(extraction, "complaint_source") : "";
+      const customer = extraction ? fieldValue(extraction, "customer_name") : "";
+      const product = extraction ? fieldValue(extraction, "product_name") : "";
+      const batch = extraction ? fieldValue(extraction, "batch_lot_number") : "";
+      const complaintType = extraction ? fieldValue(extraction, "complaint_type", "complaint_category") : "";
+      const severity = extraction ? fieldValue(extraction, "initial_severity") : "";
+
+      const extractedLines: string[] = [];
+      if (source) extractedLines.push(`- **Source:** ${source}`);
+      if (customer) extractedLines.push(`- **Customer:** ${customer}`);
+      if (product) extractedLines.push(`- **Product:** ${product}`);
+      if (batch) extractedLines.push(`- **Batch:** ${batch}`);
+      if (complaintType) extractedLines.push(`- **Type:** ${complaintType}`);
+      if (severity) extractedLines.push(`- **Severity:** ${severity}`);
+
+      const extractedSummary = extractedLines.length > 0
+        ? `\n\n**Extracted Fields:**\n${extractedLines.join("\n")}`
+        : "";
+
+      const completenessRecord = parseRecord(data?.completeness);
+      const completenessScore = completenessRecord?.score;
+      const missingFields = completenessRecord?.missing_fields;
+      const completenessNote = typeof completenessScore === "number"
+        ? `\n\n**Field Completeness:** ${Math.round(completenessScore * 100)}% — ${
+            Array.isArray(missingFields) && missingFields.length > 0
+              ? `Missing: ${missingFields.join(", ")}. Add these through the form or tell me in chat.`
+              : "All required fields were found."
+          }`
+        : "";
+
       dispatch(addMessage({
         role: "assistant",
-        content: "**Complaint Processed**\n\nI extracted the complaint details and populated the form. The initial AI classification and risk assessment are shown below. Please review the fields and recommendations before committing to QMS.",
+        content: `**Complaint Processed**\n\nComplaint text was extracted and the form is populated.${extractedSummary}${completenessNote}\n\nThe AI classification, risk assessment, and recommended actions are shown below. Please review everything before committing to QMS.`,
       }));
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Unknown error";

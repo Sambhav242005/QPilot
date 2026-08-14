@@ -83,7 +83,7 @@ describe("copilotSlice", () => {
       },
       riskAssessment: {
         severity: "Major",
-        risk_factors: ["Batch identified"],
+        risk_factors: [{ factor: "Batch identified", severity: "Major", reasoning: "Specific batch cited." }],
         reasoning: "Requires investigation.",
         recommended_action: "Route to QA.",
         confidence: "High",

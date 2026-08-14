@@ -4,6 +4,7 @@ import type {
   Confidence,
   CopilotAnalysis,
   RiskAssessment,
+  RiskFactor,
   Severity,
 } from "@/types";
 
@@ -73,12 +74,19 @@ function normalizeRiskAssessment(value: unknown): RiskAssessment | null {
 
   if (!severity) return null;
 
-  const riskFactors = Array.isArray(record?.risk_factors)
+  const riskFactors: RiskFactor[] = Array.isArray(record?.risk_factors)
     ? record.risk_factors.flatMap((factor) => {
-        if (typeof factor === "string") return [factor];
+        if (typeof factor === "string") {
+          return [{ factor, severity: "Minor" as Severity, reasoning: "" }];
+        }
         const factorRecord = asRecord(factor);
         const label = asString(factorRecord?.factor);
-        return label ? [label] : [];
+        if (!label) return [];
+        return [{
+          factor: label,
+          severity: normalizeSeverity(factorRecord?.severity) ?? "Minor",
+          reasoning: asString(factorRecord?.reasoning) ?? "",
+        }];
       })
     : [];
 

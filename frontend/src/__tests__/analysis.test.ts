@@ -28,7 +28,10 @@ describe("normalizeCopilotAnalysis", () => {
     expect(analysis.classification?.category).toBe("Product Defect");
     expect(analysis.riskAssessment).toMatchObject({
       severity: "Major",
-      risk_factors: ["Product quality issue", "Batch identified"],
+      risk_factors: [
+        { factor: "Product quality issue", severity: "Major", reasoning: "Defect is visible." },
+        { factor: "Batch identified", severity: "Major", reasoning: "Investigation can be scoped." },
+      ],
       recommended_action: "Route to QA investigation and review the affected batch.",
       confidence: null,
     });

@@ -9,9 +9,15 @@ import { AlertTriangle, CheckCircle, Info } from "lucide-react";
 type Severity = "Critical" | "Major" | "Minor";
 type Confidence = "High" | "Medium" | "Low";
 
+interface RiskFactor {
+  factor: string;
+  severity: Severity;
+  reasoning: string;
+}
+
 interface RiskAssessment {
   severity: Severity;
-  risk_factors: string[];
+  risk_factors: RiskFactor[];
   reasoning: string;
   recommended_action: string;
   confidence: Confidence | null;
@@ -35,6 +41,12 @@ const severityConfig: Record<Severity, { color: string; icon: typeof AlertTriang
     color: "bg-green-100 text-green-800 border-green-200",
     icon: CheckCircle,
   },
+};
+
+const factorSeverityConfig: Record<Severity, { color: string }> = {
+  Critical: { color: "text-red-700" },
+  Major: { color: "text-amber-700" },
+  Minor: { color: "text-green-700" },
 };
 
 const confidenceConfig: Record<Confidence, { color: string }> = {
@@ -77,13 +89,23 @@ export function RiskAssessmentCard({ assessment }: RiskAssessmentCardProps) {
           <h4 className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">
             Risk Factors
           </h4>
-          <ul className="space-y-1">
-            {assessment.risk_factors.map((factor, i) => (
-              <li key={i} className="text-sm text-gray-700 flex items-start gap-2">
-                <span className="text-gray-400" aria-hidden="true">•</span>
-                <span className="break-words">{factor}</span>
-              </li>
-            ))}
+          <ul className="space-y-3">
+            {assessment.risk_factors.map((factor, i) => {
+              const factorSeverity = factorSeverityConfig[factor.severity] ?? factorSeverityConfig.Minor;
+              return (
+                <li key={i} className="text-sm">
+                  <div className="flex items-center gap-2 mb-0.5">
+                    <span className="font-medium text-gray-900">{factor.factor}</span>
+                    <Badge variant="outline" className={cn("text-[10px] px-1.5 py-0", factorSeverity.color)}>
+                      {factor.severity}
+                    </Badge>
+                  </div>
+                  {factor.reasoning && (
+                    <p className="text-gray-600 text-xs leading-relaxed">{factor.reasoning}</p>
+                  )}
+                </li>
+              );
+            })}
           </ul>
         </div>
 
@@ -101,9 +123,10 @@ export function RiskAssessmentCard({ assessment }: RiskAssessmentCardProps) {
               <Info className="w-4 h-4 text-blue-600 mt-0.5" aria-hidden="true" />
             <div>
               <h4 className="text-xs font-medium text-blue-800 uppercase tracking-wide mb-1">
-                Recommended Action
+                Recommended Next Action
               </h4>
               <p className="text-sm text-blue-700">{assessment.recommended_action}</p>
+              <p className="text-xs text-blue-600 mt-1 italic">Requires human QA review before execution.</p>
             </div>
           </div>
         </div>
