@@ -122,6 +122,24 @@ NEXT_PUBLIC_API_URL=http://localhost:8000
 ENABLE_STREAMING=true
 ```
 
+### Using Groq
+
+QPilot uses Groq through its OpenAI-compatible API. To switch from the local
+Ollama example above to Groq:
+
+1. Create a Groq API key at [console.groq.com/keys](https://console.groq.com/keys).
+2. Edit `backend/.env` and set the three LLM variables:
+
+   ```env
+   LLM_URL=https://api.groq.com/openai/v1
+   LLM_API_KEY=gsk_your_groq_api_key
+   LLM_MODEL_NAME=openai/gpt-oss-20b
+   ```
+
+3. Restart the backend. The key is read only by FastAPI and is never sent to
+   the browser. You can replace the model with any currently supported Groq
+   chat model.
+
 ### Frontend Setup
 
 ```bash
@@ -163,6 +181,41 @@ For a host-run backend connected to the Docker database, set this in `backend/.e
 ```env
 DATABASE_URL=postgresql+asyncpg://qpilot:qpilot@localhost:5432/qpilot
 ```
+
+### Railway Deployment
+
+QPilot is a monorepo, so deploy it as three Railway services in one project:
+PostgreSQL, `backend`, and `frontend`. Do not deploy the repository root as a
+single service: Railpack cannot detect an application there.
+
+1. Add a Railway PostgreSQL service named `Postgres`.
+2. Add a `backend` service from this repository and set **Root Directory** to
+   `/backend`. Railway will use `backend/Dockerfile`. Set its healthcheck path
+   to `/api/v1/health`, generate a public domain, and add:
+
+   ```env
+   DATABASE_URL=${{Postgres.DATABASE_URL}}
+   LLM_URL=https://api.groq.com/openai/v1
+   LLM_API_KEY=gsk_your_groq_api_key
+   LLM_MODEL_NAME=openai/gpt-oss-20b
+   CORS_ORIGINS=["https://${{frontend.RAILWAY_PUBLIC_DOMAIN}}"]
+   ```
+
+3. Add a `frontend` service from the same repository and set **Root Directory**
+   to `/frontend`. Railway will use `frontend/Dockerfile`. Generate its public
+   domain and set:
+
+   ```env
+   NEXT_PUBLIC_API_URL=https://${{backend.RAILWAY_PUBLIC_DOMAIN}}
+   ```
+
+   `NEXT_PUBLIC_API_URL` is embedded during the Next.js build, so redeploy the
+   frontend after changing it. The service names in Railway references are
+   case-sensitive; update `frontend` and `backend` above if you choose different
+   names.
+
+Railway does not use `docker-compose.yml` to provision these services. Keep all
+API keys in Railway Variables, not in source files or the frontend service.
 
 ### Running the Application
 
@@ -344,9 +397,9 @@ AI responses stream live to the UI via Server-Sent Events (SSE):
 
 LLM provider is swappable by changing 3 env vars:
 ```bash
-LLM_URL=https://api.Groq.com/openai/v1    # or OpenAI, Together, etc.
+LLM_URL=https://api.groq.com/openai/v1    # or OpenAI, Together, etc.
 LLM_API_KEY=your_key
-LLM_MODEL_NAME=google/gemma-2-9b-it        # or any compatible model
+LLM_MODEL_NAME=openai/gpt-oss-20b         # or any compatible model
 ```
 
 Works with: Groq, OpenAI, Together AI, Fireworks, local vLLM, and any OpenAI-compatible API.

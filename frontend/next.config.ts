@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  // Required by the production Docker image, including Railway deployments.
+  output: "standalone",
   reactCompiler: true,
 };
 

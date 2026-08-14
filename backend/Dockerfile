@@ -20,5 +20,5 @@ COPY . .
 # Expose port
 EXPOSE 8000
 
-# Run the application
-CMD ["python", "-m", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# Railway provides PORT at runtime; retain 8000 as the local Docker default.
+CMD ["sh", "-c", "python -m uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
