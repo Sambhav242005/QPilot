@@ -2,9 +2,8 @@
 
 import json
 from functools import lru_cache
-from typing import Annotated
 
-from pydantic import Field, field_validator
+from pydantic import field_validator
 from pydantic_settings import BaseSettings
 
 
@@ -28,19 +27,25 @@ class Settings(BaseSettings):
     ENABLE_STREAMING: bool = True
 
     # ─── CORS ───────────────────────────────────────────────────────────
-    CORS_ORIGINS: list[str] = ["http://localhost:3000"]
+    CORS_ORIGINS: str = "http://localhost:3000"
 
     @field_validator("CORS_ORIGINS", mode="before")
     @classmethod
     def parse_cors_origins(cls, v):
         if isinstance(v, str):
-            try:
-                return json.loads(v)
-            except json.JSONDecodeError:
-                # Handle Railway stripping quotes: [url1, url2]
-                v = v.strip("[]")
-                return [origin.strip() for origin in v.split(",") if origin.strip()]
+            # Strip brackets if present (Railway mangles JSON)
+            v = v.strip()
+            if v.startswith("[") and v.endswith("]"):
+                v = v[1:-1]
+            return ",".join(origin.strip().strip('"').strip("'") for origin in v.split(",") if origin.strip())
+        if isinstance(v, list):
+            return ",".join(v)
         return v
+
+    @property
+    def cors_origin_list(self) -> list[str]:
+        """Return CORS_ORIGINS as a list."""
+        return [origin.strip() for origin in self.CORS_ORIGINS.split(",") if origin.strip()]
 
     model_config = {"env_file": ".env", "env_file_encoding": "utf-8"}
 
