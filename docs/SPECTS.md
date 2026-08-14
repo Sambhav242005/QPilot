@@ -513,15 +513,15 @@ backend/
 
 ## 14. Database Schema
 
-### 14.1 ORM: Prisma 7
+### 14.1 ORM: SQLAlchemy 2 + Alembic
 
-The frontend uses **Prisma 7** with driver adapters for database access:
-- **Development**: SQLite (file-based, zero config)
-- **Production**: PostgreSQL (swap via `DATABASE_URL` env var)
+The FastAPI backend owns database access through **SQLAlchemy 2** and **Alembic**:
+- **Development**: SQLite with `aiosqlite` (file-based, zero config)
+- **PostgreSQL**: `asyncpg` via `DATABASE_URL` (Docker or production)
 
-Prisma schema is located at `frontend/prisma/schema.prisma`.
+The runtime engine and migration environment both read `DATABASE_URL`. Next.js is a UI client and does not access the database directly.
 
-### 14.2 Tables (Prisma Schema)
+### 14.2 Tables (SQLAlchemy Models)
 
 ```sql
 -- Core complaint record

@@ -30,6 +30,17 @@ class Settings(BaseSettings):
     model_config = {"env_file": ".env", "env_file_encoding": "utf-8"}
 
 
+def get_async_database_url(database_url: str) -> str:
+    """Normalize supported database URLs for SQLAlchemy's async engine."""
+    if database_url.startswith("postgres://"):
+        return "postgresql+asyncpg://" + database_url[len("postgres://") :]
+    if database_url.startswith("postgresql://"):
+        return "postgresql+asyncpg://" + database_url[len("postgresql://") :]
+    if database_url.startswith("sqlite://"):
+        return "sqlite+aiosqlite://" + database_url[len("sqlite://") :]
+    return database_url
+
+
 @lru_cache
 def get_settings() -> Settings:
     """Return cached settings singleton."""

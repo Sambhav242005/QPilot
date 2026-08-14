@@ -6,7 +6,7 @@ QPilot is an AI-powered Customer Complaint Management System for pharmaceutical 
 
 ## Start Here
 
-The detailed installation and usage guide is in [docs/README.md](docs/README.md). The shortest local setup is:
+The detailed installation and usage guide is in [docs/USER_GUIDE.md](docs/USER_GUIDE.md). The shortest local setup is:
 
 ```powershell
 # Terminal 1 - backend
@@ -26,11 +26,15 @@ Then open [http://localhost:3000](http://localhost:3000), upload `backend/upload
 
 ## Documentation
 
-- [Complete user guide](docs/README.md)
-- [Architecture walkthrough](ARCHITECTURE_WALKTHROUGH.md)
-- [Known limitations](KNOWN_LIMITATIONS.md)
-- [Test report](TEST_REPORT.md)
-- [Testing strategy](TESTING.md)
+- [Complete user guide](docs/USER_GUIDE.md)
+- [Architecture walkthrough](docs/ARCHITECTURE_WALKTHROUGH.md)
+- [Known limitations](docs/KNOWN_LIMITATIONS.md)
+- [Test report](docs/TEST_REPORT.md)
+- [Testing strategy](docs/TESTING.md)
+- [Technical specification](docs/SPECTS.md)
+- [UI/UX design](docs/DESIGN.md)
+- [Implementation plan](docs/IMPLEMENTATION_PLAN.md)
+- [Task tracker](docs/TODO.md)
 - [Architecture decision records](docs/adr/)
 
 ## Screenshots / Demo
@@ -41,13 +45,9 @@ Then open [http://localhost:3000](http://localhost:3000), upload `backend/upload
 /screenshots/risk-assessment.png — AI risk assessment card
 ```
 
-Screenshots are intentionally left as review placeholders for the final demo capture:
+Screenshots are intentionally left as review placeholders for the final demo capture. Add the final images under `docs/screenshots/` when they are available.
 
-![Main complaint workspace](docs/screenshots/dashboard.png)
-![Complaint form with AI extraction](docs/screenshots/complaint.png)
-![AI risk assessment card](docs/screenshots/risk-assessment.png)
-
-The reproducible demo source is `backend/uploads/sample_complaint.pdf`. Its expected values and the walkthrough are documented in [ARCHITECTURE_WALKTHROUGH.md](ARCHITECTURE_WALKTHROUGH.md).
+The reproducible demo source is `backend/uploads/sample_complaint.pdf`. Its expected values and the walkthrough are documented in [docs/ARCHITECTURE_WALKTHROUGH.md](docs/ARCHITECTURE_WALKTHROUGH.md).
 
 ## Features
 
@@ -73,38 +73,28 @@ The reproducible demo source is `backend/uploads/sample_complaint.pdf`. Its expe
 ## Architecture
 
 ```
-┌─────────────┐
-│  Next.js    │  Frontend (React, TypeScript, Redux, Tailwind)
-│  + Prisma   │  SQLite (dev) / PostgreSQL (prod)
-└──────┬──────┘
-       │ REST API + SSE (streaming)
-┌──────▼──────┐
-│  FastAPI    │  Backend (Python, Pydantic)
-└──────┬──────┘
-       │
-┌──────▼──────┐
-│  LangGraph  │  AI Workflow Engine
-└──────┬──────┘
-       │ OpenAI-compatible API
-┌──────▼──────┐
-│  Groq    │  Groq / OpenAI / Together / etc.
-└─────────────┘
-       │
-┌──────▼──────┐
-│ PostgreSQL  │  Database (production)
-└─────────────┘
+Next.js UI (React, TypeScript, Redux, Tailwind)
+                 │ REST API + SSE
+                 ▼
+FastAPI backend (Pydantic, SQLAlchemy)
+        ┌────────┴────────┐
+        ▼                 ▼
+SQLite/PostgreSQL     LangGraph workflow
+via DATABASE_URL              │
+                              ▼
+                OpenAI-compatible LLM provider
 ```
 
 ### Key Design Decisions
 
 - **Next.js**: React-based frontend with clean separation from Python backend
 - **Redux Toolkit**: Centralized state for complaint data and copilot state
-- **Prisma 7**: Type-safe ORM with SQLite (dev) / PostgreSQL (prod)
+- **SQLAlchemy 2 + Alembic**: Backend ORM and migrations driven by `DATABASE_URL`
 - **FastAPI**: Python backend for AI workflow and business logic
 - **LangGraph**: Multi-step stateful AI workflow, not a single prompt
 - **OpenAI-compatible API**: LLM provider swappable via 3 env vars (LLM_URL, LLM_API_KEY, LLM_MODEL_NAME)
 - **Streaming**: SSE for live AI responses in UI
-- **PostgreSQL**: Structured persistent storage for complaint records (production)
+- **PostgreSQL**: Supported through `asyncpg` and `DATABASE_URL` for Docker/production
 - **Human review**: AI recommends, human decides
 - **Structured outputs**: Pydantic schemas validate all AI output
 
@@ -160,9 +150,19 @@ Backend runs at `http://localhost:8000`.
 
 The FastAPI backend creates the local SQLite tables on startup. Start the backend as described above; no PostgreSQL container or separate migration command is required for the normal demo. The local database file is `backend/qpilot.db` and should not be committed.
 
-**Production (PostgreSQL):**
+**PostgreSQL (Docker or production):**
 
-PostgreSQL is the intended production database, but production deployment is outside the current local demo. Configure the backend database layer and `DATABASE_URL` for the target environment before deploying.
+The backend reads `DATABASE_URL` for its runtime engine and Alembic migrations. To run the complete containerized stack:
+
+```powershell
+docker compose up --build
+```
+
+For a host-run backend connected to the Docker database, set this in `backend/.env`:
+
+```env
+DATABASE_URL=postgresql+asyncpg://qpilot:qpilot@localhost:5432/qpilot
+```
 
 ### Running the Application
 
@@ -178,7 +178,7 @@ npm run dev
 
 ## Testing
 
-See `TESTING.md` for complete testing strategy.
+See [docs/TESTING.md](docs/TESTING.md) for complete testing strategy.
 
 ```bash
 # Backend - all tests
@@ -225,53 +225,42 @@ cd backend && py -3 seed_demo.py
 ```
 QPilot/
 ├── AGENTS.md              # Coding agent instructions
-├── SPECTS.md              # Technical specification
-├── DESIGN.md              # UI/UX specification
-├── IMPLEMENTATION_PLAN.md # Phased implementation plan
-├── TESTING.md             # Testing strategy
-├── SKILL_MAP.md           # Skill-to-task mapping + context resilience
-├── TODO.md                # Task tracker
 ├── README.md              # This file
 ├── .env.example           # Environment variables template
 ├── docker-compose.yml     # PostgreSQL container
 │
+├── docs/                  # Project documentation
+│   ├── USER_GUIDE.md
+│   ├── SPECTS.md
+│   ├── DESIGN.md
+│   ├── IMPLEMENTATION_PLAN.md
+│   ├── TESTING.md
+│   ├── SKILL_MAP.md
+│   ├── TODO.md
+│   └── adr/
+│
 ├── frontend/              # Next.js application
-│   ├── app/               # Next.js App Router
-│   ├── components/        # React components
-│   ├── features/          # Redux slices
-│   ├── services/          # API client
-│   ├── store/             # Redux store
-│   ├── hooks/             # Custom React hooks
-│   ├── types/             # TypeScript types
-│   ├── __tests__/         # Frontend tests
-│   ├── lib/               # Utilities (Prisma client, etc.)
-│   ├── prisma/            # Prisma schema & migrations
-│   │   ├── schema.prisma  # Database schema
-│   │   └── dev.db         # SQLite database (gitignored)
-│   └── generated/         # Generated Prisma Client
+│   ├── src/app/           # Next.js App Router UI
+│   ├── src/components/    # React components
+│   ├── src/services/      # FastAPI API client
+│   ├── src/store/         # Redux store and slices
+│   ├── src/hooks/         # Custom React hooks
+│   └── e2e/               # Playwright tests
 │
 ├── backend/               # FastAPI application
 │   ├── app/
 │   │   ├── main.py        # FastAPI entry point
 │   │   ├── config.py      # Settings
 │   │   ├── api/           # API routes
-│   │   ├── models/        # ORM models
+│   │   ├── db/            # SQLAlchemy models and database engine
 │   │   ├── schemas/       # Pydantic schemas
 │   │   ├── services/      # Business logic
 │   │   ├── repositories/  # Database access
 │   │   ├── graph/         # LangGraph workflow
-│   │   ├── db/            # Database config
-│   │   └── utils/         # Utilities
 │   ├── alembic/           # Migrations
 │   ├── tests/             # Test suite
-│   │   ├── unit/          # Unit tests
-│   │   ├── integration/   # Integration tests
-│   │   ├── ai_live/       # Live AI tests (manual)
-│   │   └── mocks/         # Mock LLM scenarios
+│   │   └── fixtures/      # Test fixtures
 │   └── requirements.txt   # Python dependencies
-│
-└── tests/
-    └── e2e/               # Playwright E2E tests
 ```
 
 ## Source-Verified PDF Demo
@@ -315,7 +304,7 @@ The source PDF contains Greenfield Pharmacy, Amoxicillin 500 mg Capsules, batch 
 6. **Review**: User reviews all AI output
 7. **Commit**: User clicks "Commit to QMS" after human confirmation; the local development database records the complaint and audit information.
 
-For the complete installation, correction, risk-assessment, and troubleshooting instructions, see [docs/README.md](docs/README.md).
+For the complete installation, correction, risk-assessment, and troubleshooting instructions, see [docs/USER_GUIDE.md](docs/USER_GUIDE.md).
 
 ## AI Architecture
 
@@ -404,7 +393,7 @@ This separation ensures:
 
 ## Limitations
 
-See [KNOWN_LIMITATIONS.md](KNOWN_LIMITATIONS.md) for the current MVP boundary and demo/test assumptions.
+See [docs/KNOWN_LIMITATIONS.md](docs/KNOWN_LIMITATIONS.md) for the current MVP boundary and demo/test assumptions.
 
 ## License
 

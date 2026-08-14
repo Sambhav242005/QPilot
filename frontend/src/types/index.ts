@@ -1,5 +1,5 @@
 // QPilot TypeScript Types
-// Based on SPECTS.md schemas
+// Based on docs/SPECTS.md schemas
 
 // ─── Complaint Extraction ────────────────────────────────────────────
 export interface ComplaintExtraction {

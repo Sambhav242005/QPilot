@@ -3,10 +3,11 @@
 import asyncio
 from logging.config import fileConfig
 
-from alembic import context
 from sqlalchemy import pool
 from sqlalchemy.ext.asyncio import async_engine_from_config
 
+from alembic import context
+from app.config import get_async_database_url, get_settings
 from app.db.models import Base
 
 # this is the Alembic Config object, which provides
@@ -22,11 +23,11 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 target_metadata = Base.metadata
 
-# Use SQLite for development (no server needed)
-DATABASE_URL = "sqlite+aiosqlite:///./qpilot.db"
+# Use the same configured database as the application runtime.
+DATABASE_URL = get_async_database_url(get_settings().DATABASE_URL)
 
 # Set the database URL
-config.set_main_option("sqlalchemy.url", DATABASE_URL)
+config.set_main_option("sqlalchemy.url", DATABASE_URL.replace("%", "%%"))
 
 
 def run_migrations_offline() -> None:

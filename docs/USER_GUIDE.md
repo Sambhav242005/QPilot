@@ -27,7 +27,7 @@ QPilot is an AI assistant for pharmaceutical quality personnel. It helps structu
 - An OpenAI-compatible LLM provider, such as Groq, OpenAI, Together, or a local provider
 - PowerShell on Windows, or an equivalent shell on macOS/Linux
 
-The development database is SQLite, so PostgreSQL or Docker is not required for the normal local demo.
+The normal local demo uses SQLite. PostgreSQL is also supported through `DATABASE_URL` and Docker Compose.
 
 ## Configuration
 
@@ -51,6 +51,20 @@ The development database is SQLite, so PostgreSQL or Docker is not required for 
 
    ```env
    NEXT_PUBLIC_API_URL=http://localhost:8000
+   ```
+
+4. For PostgreSQL, use the Docker stack or set the backend database URL explicitly:
+
+   ```env
+   DATABASE_URL=postgresql+asyncpg://qpilot:qpilot@localhost:5432/qpilot
+   ```
+
+   The backend uses this URL for both its runtime engine and Alembic migrations. The default remains SQLite when this variable is not changed.
+
+   Or start the complete containerized stack from the repository root:
+
+   ```powershell
+   docker compose up --build
    ```
 
 Never put an LLM API key in frontend code, Redux state, or browser storage. Keep secrets server-side and do not commit `.env` files.
@@ -230,7 +244,7 @@ cd frontend
 npx playwright test e2e/pdf-upload-workflow.spec.ts --workers=1
 ```
 
-See [`TESTING.md`](../TESTING.md) for the testing strategy and [`TEST_REPORT.md`](../TEST_REPORT.md) for the latest verification record.
+See [`TESTING.md`](TESTING.md) for the testing strategy and [`TEST_REPORT.md`](TEST_REPORT.md) for the latest verification record.
 
 ## Troubleshooting
 
@@ -257,13 +271,13 @@ Install the Playwright browsers with `npx playwright install`, then rerun the su
 ## Related Documentation
 
 - [Root README](../README.md) - project overview and quick start
-- [Specifications](../SPECTS.md) - requirements and schemas
-- [Design](../DESIGN.md) - UI and UX decisions
-- [Implementation plan](../IMPLEMENTATION_PLAN.md) - delivery phases
-- [Testing strategy](../TESTING.md) - test conventions
-- [Architecture walkthrough](../ARCHITECTURE_WALKTHROUGH.md) - implementation tour
-- [Known limitations](../KNOWN_LIMITATIONS.md) - current MVP boundaries
-- [Test report](../TEST_REPORT.md) - verification results
+- [Specifications](SPECTS.md) - requirements and schemas
+- [Design](DESIGN.md) - UI and UX decisions
+- [Implementation plan](IMPLEMENTATION_PLAN.md) - delivery phases
+- [Testing strategy](TESTING.md) - test conventions
+- [Architecture walkthrough](ARCHITECTURE_WALKTHROUGH.md) - implementation tour
+- [Known limitations](KNOWN_LIMITATIONS.md) - current MVP boundaries
+- [Test report](TEST_REPORT.md) - verification results
 - [Architecture decision records](adr/) - important design decisions
 
 ## Safety and Scope

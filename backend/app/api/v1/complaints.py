@@ -358,11 +358,10 @@ async def send_message_stream(
 @router.post("/complaints/initialize-db")
 async def initialize_database(db: AsyncSession = Depends(get_db)):
     """Initialize database tables."""
-    from ...db.database import engine
     from ...db.models import Base
 
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+    connection = await db.connection()
+    await connection.run_sync(Base.metadata.create_all)
 
     return {"status": "success", "message": "Database initialized"}
 

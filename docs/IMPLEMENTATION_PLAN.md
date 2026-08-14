@@ -16,7 +16,7 @@ None.
 1. Initialize monorepo with `frontend/` and `backend/` directories
 2. Initialize Next.js project with TypeScript, Tailwind CSS
 3. Initialize Python project with FastAPI, uvicorn
-4. Create `.env.example` at root and in each subdirectory
+4. Create the root `.env.example`; backend and frontend use local ignored `.env` files when needed
 5. Create `.gitignore` covering node_modules, __pycache__, .env, .next, dist
 6. Create `docker-compose.yml` with PostgreSQL service
 7. Set up Alembic in `backend/`

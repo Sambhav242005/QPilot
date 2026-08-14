@@ -2,12 +2,13 @@
 
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
-from ..config import get_settings
+from ..config import get_async_database_url, get_settings
 
 settings = get_settings()
 
-# Use SQLite for development (no server needed)
-DATABASE_URL = "sqlite+aiosqlite:///./qpilot.db"
+# Use the configured database. SQLite remains the default for local development;
+# Docker Compose supplies a PostgreSQL URL for the containerized deployment.
+DATABASE_URL = get_async_database_url(settings.DATABASE_URL)
 
 # Create async engine
 engine = create_async_engine(
