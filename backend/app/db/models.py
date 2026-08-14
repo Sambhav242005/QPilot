@@ -18,8 +18,8 @@ def generate_id() -> str:
 
 
 def utc_now() -> datetime:
-    """Return current UTC time."""
-    return datetime.now(timezone.utc)
+    """Return current UTC time as naive datetime (for TIMESTAMP WITHOUT TIME ZONE)."""
+    return datetime.now(timezone.utc).replace(tzinfo=None)
 
 
 class Complaint(Base):
