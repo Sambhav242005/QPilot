@@ -1,0 +1,134 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e4]:
+        - generic [ref=e5]:
+          - generic [ref=e9]:
+            - generic [ref=e10]: QPilot
+            - paragraph [ref=e11]: AI Complaint Intelligence
+          - generic [ref=e12]: v0.1.0
+        - navigation [ref=e13]:
+          - link "Dashboard" [ref=e14] [cursor=pointer]:
+            - /url: /
+          - link "Complaints" [ref=e15] [cursor=pointer]:
+            - /url: /complaints
+          - link "Reports" [ref=e16] [cursor=pointer]:
+            - /url: /reports
+        - generic [ref=e17]:
+          - button "Notifications" [ref=e18]
+          - button "Settings" [ref=e19]
+          - button "User profile" [ref=e20]
+    - link "Skip to main content" [ref=e21] [cursor=pointer]:
+      - /url: "#main-content"
+    - main [ref=e22]:
+      - generic [ref=e25]:
+        - generic [ref=e28]:
+          - generic [ref=e29]:
+            - generic [ref=e30]:
+              - generic [ref=e31]:
+                - heading "Log Customer Complaint" [level=1] [ref=e32]
+                - paragraph [ref=e33]: API & FDF Quality Assurance Module
+              - generic [ref=e34]: Pending Triage
+            - generic [ref=e35]: AI populates the form after intake. Review and correct any field before committing it to QMS.
+          - generic [ref=e40]:
+            - region [ref=e41]:
+              - heading "1. Origin & Customer Details" [level=2] [ref=e42]
+              - generic [ref=e43]:
+                - generic [ref=e44]:
+                  - text: Complaint Source
+                  - combobox "Complaint Source" [ref=e45]:
+                    - generic [ref=e46]: Awaiting AI extraction…
+                    - img: ▼
+                  - textbox [ref=e47]
+                - generic [ref=e48]:
+                  - text: Customer Name
+                  - textbox "Customer Name" [ref=e49]:
+                    - /placeholder: Awaiting AI extraction…
+            - separator [ref=e50]
+            - region [ref=e51]:
+              - heading "2. Product & Batch Identification" [level=2] [ref=e52]
+              - generic [ref=e53]:
+                - generic [ref=e54]:
+                  - text: Product Name
+                  - textbox "Product Name" [ref=e55]:
+                    - /placeholder: Awaiting AI extraction…
+                - generic [ref=e56]:
+                  - text: Product Strength/Grade
+                  - textbox "Product Strength/Grade" [ref=e57]:
+                    - /placeholder: Awaiting AI extraction…
+                - generic [ref=e58]:
+                  - text: Batch/Lot Number
+                  - textbox "Batch/Lot Number" [ref=e59]:
+                    - /placeholder: Awaiting AI extraction…
+                - generic [ref=e60]:
+                  - text: Manufacturing Date
+                  - textbox "Manufacturing Date" [ref=e61]
+                - generic [ref=e62]:
+                  - text: Expiry Date
+                  - textbox "Expiry Date" [ref=e63]
+                - generic [ref=e64]:
+                  - text: Quantity Affected
+                  - textbox "Quantity Affected" [ref=e65]:
+                    - /placeholder: Awaiting AI extraction…
+            - separator [ref=e66]
+            - region [ref=e67]:
+              - heading "3. Complaint Details" [level=2] [ref=e68]
+              - generic [ref=e69]:
+                - generic [ref=e70]:
+                  - text: Complaint Type
+                  - combobox "Complaint Type" [ref=e71]:
+                    - generic [ref=e72]: Awaiting AI extraction…
+                    - img: ▼
+                  - textbox [ref=e73]
+                - generic [ref=e74]:
+                  - text: Complaint Date
+                  - textbox "Complaint Date" [ref=e75]
+              - generic [ref=e76]:
+                - text: Detailed Complaint Description
+                - textbox "Detailed Complaint Description" [ref=e77]:
+                  - /placeholder: Awaiting AI extraction…
+            - separator [ref=e78]
+            - region [ref=e79]:
+              - heading "4. Initial Assessment & Priority" [level=2] [ref=e80]
+              - generic [ref=e81]:
+                - generic [ref=e82]:
+                  - text: Initial Severity
+                  - combobox "Initial Severity" [ref=e83]:
+                    - generic [ref=e84]: Awaiting AI extraction…
+                    - img: ▼
+                  - textbox [ref=e85]
+                - generic [ref=e86]:
+                  - text: Priority
+                  - combobox "Priority" [ref=e87]:
+                    - generic [ref=e88]: Awaiting AI extraction…
+                    - img: ▼
+                  - textbox [ref=e89]
+          - generic [ref=e90]:
+            - generic [ref=e91]: Upload a document or paste complaint text to begin.
+            - button "Reset Form" [disabled]
+        - generic [ref=e97]:
+          - generic [ref=e99]:
+            - heading "AI Complaint Intake Assistant" [level=2] [ref=e104]
+            - generic [ref=e105]: BETA
+          - generic [ref=e106]:
+            - generic [ref=e107]:
+              - group "Complaint document upload" [ref=e108]:
+                - paragraph [ref=e112]: Drag & drop complaint document here
+                - paragraph [ref=e113]:
+                  - text: or
+                  - button "click to browse" [ref=e114] [cursor=pointer]
+                - button "Upload complaint document" [ref=e115]
+              - generic [ref=e116]: OR
+              - button "Paste Complaint Text / Email" [ref=e117]
+              - paragraph [ref=e118]: "Supported formats: PDF, DOCX, TXTMax file size: 10 MB"
+            - generic [ref=e121]:
+              - generic [ref=e122]: AI Assistant
+              - paragraph [ref=e128]: Upload a complaint document or paste text above. I will automatically extract the details and populate the form for you.
+            - generic [ref=e129]:
+              - generic [ref=e130]:
+                - generic [ref=e131]: Message the AI copilot
+                - textbox "Message the AI copilot" [ref=e132]:
+                  - /placeholder: Ask about this complaint…
+                - button "Send message" [disabled]
+              - paragraph [ref=e133]: AI responses may contain errors. Please verify information before committing.
+  - alert [ref=e136]
