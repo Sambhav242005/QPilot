@@ -1,0 +1,66 @@
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+venv/
+.venv/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Build
+.next/
+out/
+dist/
+build/
+*.egg-info/
+.vercel/
+frontend/src/generated/
+
+# IDE
+.vscode/
+.idea/
+.agents/
+.claude/
+.windsurf/
+skills-lock.json
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+*.log
+npm-debug.log*
+
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+coverage/
+playwright-report/
+test-results/
+blob-report/
+
+# Alembic
+backend/alembic/versions/*.pyc
+
+# Temporary
+tmp/
+temp/
+*.tmp
+
+# Runtime uploads (keep the documented demo fixture)
+backend/uploads/*
+!backend/uploads/sample_complaint.pdf

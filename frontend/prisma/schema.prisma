@@ -1,0 +1,80 @@
+// QPilot Prisma Schema
+// SQLite for development, PostgreSQL for production
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Complaint {
+  id                String   @id @default(cuid())
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  // ─── Input ───────────────────────────────────────────────────────
+  rawInput          String
+  inputType         String   // "text", "pdf", "correction"
+  filePath          String?
+
+  // ─── Extracted Data (JSON strings for flexibility) ───────────────
+  extractedData     String?  // JSON: ComplaintExtraction
+  validatedData     String?  // JSON: ComplaintExtraction
+
+  // ─── Validation ──────────────────────────────────────────────────
+  validationResults String?  // JSON: validation details
+  missingFields     String?  // JSON: string[]
+
+  // ─── AI Analysis ─────────────────────────────────────────────────
+  classification    String?  // JSON: ComplaintClassification
+  riskAssessment    String?  // JSON: RiskAssessment
+  recommendations   String?  // JSON: string[]
+  completeness      String?  // JSON: CompletenessResult
+
+  // ─── Conversation ────────────────────────────────────────────────
+  conversationHistory String? // JSON: ConversationMessage[]
+
+  // ─── Status ──────────────────────────────────────────────────────
+  processingStatus  String   @default("idle")   // idle, processing, complete, error
+  reviewState       String   @default("pending") // pending, approved, rejected
+  commitState       String   @default("draft")   // draft, reviewing, committed
+
+  // ─── Errors ──────────────────────────────────────────────────────
+  errors            String?  // JSON: string[]
+
+  // ─── QMS Reference (after commit) ───────────────────────────────
+  qmsId             String?
+  committedAt       DateTime?
+
+  // ─── Relations ───────────────────────────────────────────────────
+  auditEvents       AuditEvent[]
+
+  // ─── Indexes ─────────────────────────────────────────────────────
+  @@index([processingStatus])
+  @@index([reviewState])
+  @@index([commitState])
+  @@index([createdAt])
+}
+
+model AuditEvent {
+  id                String   @id @default(cuid())
+  createdAt         DateTime @default(now())
+
+  // ─── Reference ───────────────────────────────────────────────────
+  complaintId       String
+  complaint         Complaint @relation(fields: [complaintId], references: [id])
+
+  // ─── Event Data ──────────────────────────────────────────────────
+  eventType         String   // "created", "updated", "committed", "reviewed", etc.
+  description       String
+  actor             String   // "user", "system", "ai"
+  details           String?  // JSON: additional event data
+
+  // ─── Indexes ─────────────────────────────────────────────────────
+  @@index([complaintId])
+  @@index([eventType])
+  @@index([createdAt])
+}
